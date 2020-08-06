@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<script src='<%= ResolveUrl("~/Scripts/jquery-1.7.1.min.js")%>' type="text/javascript"></script>
+<script type="text/jscript">
+
+    var clientsId = "18778a15afaf48d0ae3b6786c66932cd"; //instagram client id is here (xxx44662ae4a4ffxxx321e0f178a6xxx)
+       function GetPhoto() {
+           if ($.trim($("#TextBoxInstagram").val()) != "") {
+               GetUserIdFromInstragram($.trim($("#TextBoxInstagram").val()));
+           }
+       }
+       function GetUserIdFromInstragram(InstragramUrl) {
+
+           var stringLength = InstragramUrl.length; // this will be 16
+           var lastChar = InstragramUrl.charAt(stringLength - 1); // th
+           if (lastChar == "/") {
+               InstragramUrl = InstragramUrl.substring(0, InstragramUrl.length - 1);
+           }
+           var Username = "ata_sabri";
+           $.ajax({
+               type: "GET",
+               url: "https://api.instagram.com/v1/users/search?q=" + Username + "&client_id=" + clientsId + "",
+               dataType: "jsonp",
+               crossDomain: true,
+               beforeSend: function () {
+               },
+               complete: function () {
+               },
+               success: function (data) {
+                   GetPhotoFromInstragram(data["data"][0]["id"])
+               }
+           });
+       }
+       // This method is used to get Photos from Instragram with the help of user id and clients id
+       function GetPhotoFromInstragram(UserId) {
+           jQuery("#MyInstagramPhoto").html("");
+           $.ajax({
+               type: "GET",
+               url: "https://api.instagram.com/v1/users/" + UserId + "/media/recent/?client_id=" + clientsId + "&count=12",
+               dataType: "jsonp",
+               crossDomain: true,
+               beforeSend: function () {
+                   ShowLoading();
+
+               },
+               complete: function () {
+                   HideLoading();
+               },
+               success: function (data) {
+                   if (data != "") {
+                       if (data["data"].length > 0) {
+                           for (var i = 0; i < data["data"].length; i++) {
+                               jQuery("#MyInstagramPhoto").append("<li><a href='" + data.data[i].link + "' target=\"_blank\"><img src='" + data.data[i].images.low_resolution.url + "' class=\"instpics small\"  /></a></li>");
+                           }
+                       }
+                   }
+               }
+           });
+       }
+
+       function ShowLoading() {
+           var scrollTop = jQuery(window).scrollTop();
+           jQuery('.overlay-bg').show();
+           return true;
+       }
+       function HideLoading() {
+           jQuery("#divoverlay").hide();
+       }
+</script>
+<style type="text/css">
+    /*For loader and masking */
+    .overlay-bg {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        background: black !important;
+        opacity: 0.30;
+        height: 100%;
+        width: 100%;
+    }
+
+    .overlay-content {
+        background: #fff;
+        padding: 1%;
+        width: 32px;
+        height: 32px;
+        position: relative;
+        cursor: default;
+        border-radius: 4px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.9);
+        left: 50%;
+        top: 20% !important;
+    }
+    /* style for Image */
+    ul.ImageStyle li {
+        list-style-type: none;
+        width: 24%;
+        float: left;
+        padding: 1px 5px 0px 0px;
+        border: none;
+    }
+
+    .instpics {
+        width: 100%;
+    }
+</style>
+<div class="row" id="divInstagram">
+    <div>
+        Instagram Url
+        <input type="text" id="TextBoxInstagram" placeholder="Enter your instagram url" style="width: 300px" />
+        <input type="button" onclick="GetPhoto(); return false;" value="Get Instagram Photos" />
+    </div>
+    <div>
+        <%--display Images--%>
+        <ul id="MyInstagramPhoto" class="ImageStyle"></ul>
+    </div>
+</div>
+   <%--Masking- This div will hide content untill data will fetch--%>
+<div class="overlay-bg" id="divoverlay">
+    <div class="overlay-content">
+        <img src="<%= ResolveUrl(" ~/images/loader.gif") %>" alt="loading" />
+    </div>
+</div>  
+

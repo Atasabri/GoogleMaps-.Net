@@ -1,0 +1,100 @@
+﻿@model IEnumerable<GoogleMap.Models.Country>
+ @using GoogleMap.Models
+@{
+    ViewBag.Title = "Home Page";
+    Country country = Model.Where(x=>x.ID== 12).FirstOrDefault();
+    List<City> cities = country.Cities.ToList();
+}
+
+<style>
+    /* Always set the map height explicitly to define the size of the div
+      * element that contains the map. */
+    #map {
+        height: 400px;
+        width:100%;
+    }
+    
+   
+    /* Optional: Makes the sample page fill the window. */
+
+</style>
+<br/><br/>
+<br/><br/>
+<div id="map"></div>
+<script>
+  
+</script>
+<script>
+    var map;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 7,
+            center: new google.maps.LatLng(@country.Lat, @country.Log),
+            mapTypeId: 'terrain'
+        });
+
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var icons = {
+            info: {
+                icon: "",
+            }
+        };
+        var features = [
+        ];
+        var infowindow = [];
+        @for(var i=0;i< cities.Count;i++)
+        {
+            <Text>
+
+                features[@(i)] ={
+                    position: new google.maps.LatLng(@cities[i].Lat, @cities[i].Log),
+                type: 'info'
+                     }
+
+        </text>
+            <text>
+
+        
+        infowindow[@(i)]= new google.maps.InfoWindow({
+            content: '<div id="content">' +
+                            '<div id="siteNotice">' +
+                            '</div>' +
+                            '<h1 id="firstHeading" class="firstHeading">@cities[i].Name</h1>' +
+                            '<div id="bodyContent">' +
+                            '<p><b>Ata Sabri</b> <b>@cities[i].Name_en</b>' +
+                            '@country.Name , @country.Name_en ' +
+                            '@country.History' +
+                            'Heritage Site.</p>' +
+                            '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
+                            'https://en.wikipedia.org/w/index.php?title=Uluru</a> ' +
+                            '(last visited June 22, 2009).</p>' +
+                            '</div>' +
+                            '</div>'
+        });
+
+        // Create markers.
+      
+        </text>
+        }
+
+        features.forEach(function(feature) {
+            var marker = new google.maps.Marker({
+                position: feature.position,
+                icon: icons[feature.type].icon,
+                map: map
+            });
+            marker.addListener('click', function () {
+                infowindow[features.indexOf(feature)].open(map, marker);
+                for (var i = 0; i < features.length; i++) {
+                    if(i!=features.indexOf(feature))
+                    {
+                        infowindow[i].close(map, marker);
+                    }                   
+                }               
+            });
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfi--X3KHpB_i-y28cj--IwB7VbYpPcAE&callback=initMap">
+</script>

@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TravellerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Cities">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Name_en" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Log" Type="float" Nullable="false" />
+    <Property Name="Lat" Type="float" Nullable="false" />
+    <Property Name="Country_ID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Countries">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Name_en" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Currency" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="CurrencyName" Type="nvarchar(max)" />
+    <Property Name="Log" Type="float" Nullable="false" />
+    <Property Name="Lat" Type="float" Nullable="false" />
+    <Property Name="Police_Number" Type="nvarchar" MaxLength="11" Nullable="false" />
+    <Property Name="Ambulance_Number" Type="nvarchar" MaxLength="11" Nullable="false" />
+    <Property Name="Fire_Number" Type="nvarchar" MaxLength="11" Nullable="false" />
+    <Property Name="History" Type="nvarchar(max)" />
+    <Property Name="History_en" Type="nvarchar(max)" />
+    <Property Name="Roles" Type="nvarchar(max)" />
+    <Property Name="Roles_en" Type="nvarchar(max)" />
+  </EntityType>
+  <Association Name="FK__Cities__Country___0E591826">
+    <End Role="Countries" Type="Self.Countries" Multiplicity="1" />
+    <End Role="Cities" Type="Self.Cities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Countries">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Cities">
+        <PropertyRef Name="Country_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="TravellerModelStoreContainer">
+    <EntitySet Name="Cities" EntityType="Self.Cities" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__Cities__Country___0E591826" Association="Self.FK__Cities__Country___0E591826">
+      <End Role="Countries" EntitySet="Countries" />
+      <End Role="Cities" EntitySet="Cities" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
